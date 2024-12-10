@@ -1,0 +1,76 @@
+
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Create a Book', style: TextStyle(color: Colors.white)),
+        backgroundColor: Colors.teal,
+      ),
+      body: Padding(
+        padding: EdgeInsets.all(16.0),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              TextFormField(
+                controller: _titleController,
+                decoration: InputDecoration(
+                  labelText: 'Title',
+                  border: OutlineInputBorder(),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.teal),
+                  ),
+                ),
+                validator: (value) => value == null || value.isEmpty
+                    ? 'Please enter a title'
+                    : null,
+              ),
+              SizedBox(height: 15),
+              TextFormField(
+                controller: _authorController,
+                decoration: InputDecoration(
+                  labelText: 'Author',
+                  border: OutlineInputBorder(),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.teal),
+                  ),
+                ),
+                validator: (value) => value == null || value.isEmpty
+                    ? 'Please enter an author'
+                    : null,
+              ),
+              SizedBox(height: 15),
+              TextFormField(
+                controller: _contentController,
+                decoration: InputDecoration(
+                  labelText: 'Content',
+                  border: OutlineInputBorder(),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.teal),
+                  ),
+                ),
+                maxLines: 5,
+                validator: (value) => value == null || value.isEmpty
+                    ? 'Please enter content'
+                    : null,
+              ),
+              SizedBox(height: 20),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.teal),
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {
+                    Navigator.pop(context, {
+                      'title': _titleController.text,
+                      'author': _authorController.text,
+                      'content': _contentController.text,
+                    });
+                  }
+                },
+                child: Text('Save Book'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

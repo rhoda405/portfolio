@@ -1,0 +1,178 @@
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(BookCreatorApp());
+}
+
+class BookCreatorApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Book Creator',
+      theme: ThemeData(
+        primarySwatch: Colors.teal,
+        scaffoldBackgroundColor: Colors.teal[50],
+        textTheme: TextTheme(
+          bodyMedium: TextStyle(color: Colors.teal[900]),
+        ),
+      ),
+      home: HomePage(),
+    );
+  }
+}
+
+class HomePage extends StatefulWidget {
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  List<Map<String, String>> books = [];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Book Creator', style: TextStyle(color: Colors.white)),
+        backgroundColor: Colors.teal,
+      ),
+      body: books.isEmpty
+          ? Center(
+              child: Text(
+                'No books available. Create one!',
+                style: TextStyle(fontSize: 18, color: Colors.teal[700]),
+              ),
+            )
+          : ListView.builder(
+              itemCount: books.length,
+              itemBuilder: (context, index) {
+                final book = books[index];
+                return Card(
+                  margin: EdgeInsets.all(10),
+                  color: Colors.white,
+                  child: ListTile(
+                    title: Text(book['title']!,
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                    subtitle: Text('By ${book['author']}',
+                        style: TextStyle(color: Colors.teal[700])),
+                    onTap: () => showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: Text(book['title']!),
+                        content: Text(
+                            'Author: ${book['author']}\n\n${book['content']}'),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(context),
+                            child: Text('Close',
+                                style: TextStyle(color: Colors.teal)),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.teal,
+        child: Icon(Icons.add, color: Colors.white),
+        onPressed: () async {
+          final newBook = await Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => CreateBookPage()),
+          );
+          if (newBook != null && newBook is Map<String, String>) {
+            setState(() {
+              books.add(newBook);
+            });
+          }
+        },
+      ),
+    );
+  }
+}
+
+class CreateBookPage extends StatelessWidget {
+  final _formKey = GlobalKey<FormState>();
+  final _titleController = TextEditingController();
+  final _authorController = TextEditingController();
+  final _contentController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Create a Book', style: TextStyle(color: Colors.white)),
+        backgroundColor: Colors.teal,
+      ),
+      body: Padding(
+        padding: EdgeInsets.all(16.0),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              TextFormField(
+                controller: _titleController,
+                decoration: InputDecoration(
+                  labelText: 'Title',
+                  border: OutlineInputBorder(),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.teal),
+                  ),
+                ),
+                validator: (value) => value == null || value.isEmpty
+                    ? 'Please enter a title'
+                    : null,
+              ),
+              SizedBox(height: 15),
+              TextFormField(
+                controller: _authorController,
+                decoration: InputDecoration(
+                  labelText: 'Author',
+                  border: OutlineInputBorder(),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.teal),
+                  ),
+                ),
+                validator: (value) => value == null || value.isEmpty
+                    ? 'Please enter an author'
+                    : null,
+              ),
+              SizedBox(height: 15),
+              TextFormField(
+                controller: _contentController,
+                decoration: InputDecoration(
+                  labelText: 'Content',
+                  border: OutlineInputBorder(),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.teal),
+                  ),
+                ),
+                maxLines: 5,
+                validator: (value) => value == null || value.isEmpty
+                    ? 'Please enter content'
+                    : null,
+              ),
+              SizedBox(height: 20),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.teal),
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {
+                    Navigator.pop(context, {
+                      'title': _titleController.text,
+                      'author': _authorController.text,
+                      'content': _contentController.text,
+                    });
+                  }
+                },
+                child: Text('Save Book'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

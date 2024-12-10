@@ -1,0 +1,32 @@
+class CreateBookPage extends StatelessWidget {
+  final _formKey = GlobalKey<FormState>();
+  final _titleController = TextEditingController();
+  final _authorController = TextEditingController();
+  final _contentController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Create a Book', style: TextStyle(color: Colors.white)),
+        backgroundColor: Colors.teal,
+      ),
+      body: Padding(
+        padding: EdgeInsets.all(16.0),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              TextFormField(
+                controller: _titleController,
+                decoration: InputDecoration(
+                  labelText: 'Title',
+                  border: OutlineInputBorder(),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.teal),
+                  ),
+                ),
+                validator: (value) => value == null || value.isEmpty
+                    ? 'Please enter a title'
+                    : null,
+              ),
